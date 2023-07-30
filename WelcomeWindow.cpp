@@ -2,6 +2,8 @@
 #include <iostream>
 using namespace std ;
 
+#define within(x,min,max) (x<=max && x>=min)
+
 void WelcomeWindow::display(Minesweeper & minesweeper, float width, float height, sf::Font font) {
     RenderWindow render_window(VideoMode(width, height), "Minesweeper", Style::Close) ;
     render_window.setFramerateLimit(60) ;
@@ -47,18 +49,19 @@ void WelcomeWindow::display(Minesweeper & minesweeper, float width, float height
             // if the user starts typing, execute the following
             else if (event.type == Event::TextEntered) {
                 // make sure a letter was entered
-                if (event.text.unicode <= 122 && event.text.unicode >= 65 && this->player_name.length() <= 11) {
+
+                if (within(event.text.unicode,'a','z') | within(event.text.unicode, 'A', 'Z') && this->player_name.length() <= 9) {
                     // if the first letter input is lowercase, capitalize it
-                    if (this->player_name.length() == 0 && event.text.unicode >= 97 && event.text.unicode <= 122) {
-                        this->player_name += (static_cast<char>(event.text.unicode - 32));
+                    if (this->player_name.length() == 0 && within(event.text.unicode, 'a', 'z')) {
+                        this->player_name += (static_cast<char>(event.text.unicode - 32)) ;
                     } // if the following letters input are uppercase, un-capitalize them
-                    else if (this->player_name.length() > 0 && event.text.unicode >= 65 && event.text.unicode <= 90) {
-                        this->player_name += (static_cast<char>(event.text.unicode + 32));
+                    else if (this->player_name.length() > 0 && within(event.text.unicode, 'A', 'Z')) {
+                        this->player_name += (static_cast<char>(event.text.unicode + 32)) ;
                     } else
                         // otherwise, simply add what was typed
-                        this->player_name += (static_cast<char>(event.text.unicode));
+                        this->player_name += (static_cast<char>(event.text.unicode)) ;
                 } else if (event.text.unicode == 8 && this->player_name.length() > 0) {
-                    this->player_name.pop_back();
+                    this->player_name.pop_back() ;
                 }
 
             } else if (Keyboard::isKeyPressed(Keyboard::Enter)) {

@@ -4,12 +4,26 @@
 using namespace std ;
 using namespace sf ;
 
+enum tile_states {hidden, empty, exploded, flagged};
+
 class Tile {
 private:
+    // texture objects
     Texture t_hidden ;
-    Texture t_revealed ;
+    Texture t_empty ;
+    Texture t_exploded ;
+    Texture t_flagged ;
 public:
-    Sprite s_hidden ;
-    Sprite s_revealed ;
+    // member variables
+    tile_states tile_state ;
+    bool mine ;
+    // constructor
     Tile(int x, int y) ;
+    // member functions
+    void changeState(tile_states new_state) ;
+    // sprite objects
+    Sprite s_hidden ;
+    Sprite s_empty ;
+    Sprite s_exploded ;
+    Sprite s_flagged ;
 };
