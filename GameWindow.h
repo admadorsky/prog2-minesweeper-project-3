@@ -3,7 +3,7 @@
 using namespace std ;
 using namespace sf ;
 
-enum game_states {running, won, lost, paused};
+enum game_states {running, won, lost, paused, debug};
 
 class GameWindow {
 private:
@@ -27,5 +27,5 @@ public:
     Sprite s_leaderboard_button ;
 
     GameWindow() ;
-    void display(Minesweeper & minesweeper, float width, float height, Font font) ;
+    void display(Minesweeper & minesweeper, float & width, float & height, Font & font) ;
 };

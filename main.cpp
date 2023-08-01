@@ -17,7 +17,10 @@ int main() {
     // initialize main font
     Font font ;
     // load the main font
-    if (!font.loadFromFile("files/font.ttf")) { cout << "cannot find font!" << endl ; }
+    if (!font.loadFromFile("files/font.ttf")) {
+        cout << "cannot find font!" << endl ;
+        return 1 ;
+    }
 
     // calculate window width and height
     float width = minesweeper.game_data.cols * 32 ;
@@ -28,8 +31,8 @@ int main() {
 
     // run the game until the user exits
     while (minesweeper.game_state != leave) {
-        if (minesweeper.game_state == welcome) welcome_window.display(minesweeper, width, height, font);
-        else if (minesweeper.game_state == game) game_window.display(minesweeper, width, height, font);
+        if (minesweeper.game_state == welcome) welcome_window.display(minesweeper, width, height, font) ;
+        else if (minesweeper.game_state == game) game_window.display(minesweeper, width, height, font) ;
     }
 
     return 0;
