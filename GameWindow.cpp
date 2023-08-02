@@ -128,6 +128,7 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
                             }
                             this->game_state = lost ;
                         } else {
+                            // reveal clicked tile
                             board.at(lclicked_tile_row).at(lclicked_tile_col).changeState(revealed) ;
                             vector<Tile * > adjacents ;
                             adjacents = getAdjacents(minesweeper,
@@ -135,6 +136,7 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
                                                      minesweeper.game_data.cols,
                                                      board, lclicked_tile_row,
                                                      lclicked_tile_col) ;
+                            // find unflagged adjacent mines
                             bool mineless = true ;
                             int i = 0 ;
                             while (mineless && i < adjacents.size()) {
@@ -144,6 +146,7 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
                                 }
                                 i++ ;
                             }
+                            // clear adjacent tiles
                             if (mineless) {
                                 for (int a = 0; a < adjacents.size(); a++) {
                                     if (!adjacents.at(a)->mine) {
@@ -151,9 +154,11 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
                                     }
                                 }
                             }
+                            // clear all empty tiles until there are none left
                             bool none_left_to_clear = false ;
                             while(!none_left_to_clear) {
                                 none_left_to_clear = true ;
+                                // iterate through all tiles and find revealed empties
                                 for (int y = 0; y < board.size(); y++) {
                                     for (int x = 0; x < board.at(y).size(); x++) {
                                         if (board.at(y).at(x).tile_state == revealed &&
@@ -162,10 +167,11 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
                                                                                     minesweeper.game_data.rows,
                                                                                     minesweeper.game_data.cols,
                                                                                     board, y, x);
+                                            // check whether to continue revealing
                                             for (int a = 0; a < adjacents.size(); a++) {
                                                 if (adjacents.at(a)->tile_num == 0 && adjacents.at(a)->tile_state == hidden)
                                                     none_left_to_clear = false ;
-
+                                                // reveal
                                                 adjacents.at(a)->changeState(revealed) ;
                                             }
                                         }
