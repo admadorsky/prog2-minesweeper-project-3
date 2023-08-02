@@ -126,6 +126,7 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
                 }
             }
 
+            // player clicked pause button
             if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left &&
             within(event.mouseButton.x, ( width / 2 ) + 160, ( width / 2 ) + 160 + 64) &&
             within(event.mouseButton.y, (height - 50) - 32, (height - 50) + 32)) {
@@ -133,6 +134,16 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
                     this->game_state = paused ;
                 else if (this->game_state == paused)
                     this->game_state = running ;
+            }
+
+            // player clicked debug button
+            if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left &&
+            within(event.mouseButton.x, ( width / 2 ) + 96, ( width / 2 ) + 96 + 64) &&
+            within(event.mouseButton.y, (height - 50) - 32, (height - 50) + 32)) {
+                if (this->game_state == running | this->game_state == paused)
+                    this->game_state = debug;
+                else if (this->game_state == debug)
+                    this->game_state = running;
             }
 
             if (this->game_state == running) {
@@ -254,14 +265,14 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
 
         // draw the board
         render_window.clear(Color::White) ;
-        if (this->game_state == running | this->game_state == paused) render_window.draw(s_happy_face) ;
+        if (this->game_state == running | this->game_state == paused | this->game_state == debug) render_window.draw(s_happy_face) ;
         else if (this->game_state == lost) render_window.draw(s_sad_face) ;
         else if (this->game_state == won) render_window.draw(s_win_face) ;
         render_window.draw(s_debug_button) ;
         if (this->game_state != paused) render_window.draw(s_pause_button) ;
         else render_window.draw(s_play_button) ;
         render_window.draw(s_leaderboard_button) ;
-        if (this->game_state != paused) {
+        if (this->game_state == running | this->game_state == won | this->game_state == lost) {
             for (int i = 0; i < board.size(); i++) {
                 for (int j = 0; j < board.at(i).size(); j++) {
                     if (board.at(i).at(j)->tile_state == hidden)
@@ -301,10 +312,18 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
                     }
                 }
             }
-        } else {
+        } else if (this->game_state == paused) {
             for (int i = 0; i < board.size(); i++) {
                 for (int j = 0; j < board.at(i).size(); j++) {
-                    render_window.draw(board.at(i).at(j)->s_empty);
+                    render_window.draw(board.at(i).at(j)->s_empty) ;
+                }
+            }
+        } else if (this->game_state == debug) {
+            for (int i = 0; i < board.size(); i++) {
+                for (int j = 0; j < board.at(i).size(); j++) {
+                    render_window.draw(board.at(i).at(j)->s_hidden) ;
+                    if (board.at(i).at(j)->mine)
+                        render_window.draw(board.at(i).at(j)->s_exploded, BlendAlpha) ;
                 }
             }
         }
