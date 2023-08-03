@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "GameWindow.h"
+#include "LeaderboardWindow.h"
 #include "Tile.h"
 #include "Number.h"
 #include <iostream>
@@ -43,7 +44,7 @@ GameWindow::GameWindow() {
 }
 
 void GameWindow::display(Minesweeper & minesweeper, float & width, float & height, sf::Font & font) {
-
+    LeaderboardWindow leaderboard_window ;
     auto clock_start = chrono::high_resolution_clock::now() ;
     auto clock_paused = chrono::high_resolution_clock::now() ;
     auto clock_unpaused = chrono::high_resolution_clock::now() ;
@@ -195,6 +196,16 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
                 }
             }
 
+            // player clicked leaderboard button
+            if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left &&
+                within(event.mouseButton.x, ( width / 2 ) + 224, ( width / 2 ) + 224 + 64) &&
+                within(event.mouseButton.y, (height - 50) - 32, (height - 50) + 32)) {
+                if (this->game_state == running) {
+                    clock_paused = chrono::high_resolution_clock::now() ;
+                    this->game_state = leaderboard ;
+                }
+            }
+
             if (this->game_state == running) {
                 if (event.type == Event::MouseButtonPressed) {
                     // make sure the click event was left click and that it happened inside the window
@@ -314,7 +325,7 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
             // if only bombs are left hidden, draw flags on all of them and win the game
             if (any_left_non_bombs == false) {
                 // win the game
-                this->game_state = won;
+                this->game_state = won ;
                 // set the counter to 0
                 counter_hundreds.number = 0 ;
                 counter_tens.number = 0 ;
@@ -340,7 +351,7 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
 
         render_window.draw(s_debug_button) ;
         render_window.draw(s_leaderboard_button) ;
-        if (this->game_state == running | this->game_state == paused | this->game_state == debug)
+        if (this->game_state == running | this->game_state == paused | this->game_state == debug | this->game_state == leaderboard)
             render_window.draw(s_happy_face) ;
         else if (this->game_state == lost) render_window.draw(s_sad_face) ;
         else if (this->game_state == won) render_window.draw(s_win_face) ;
@@ -388,7 +399,7 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
                     }
                 }
             }
-        } else if (this->game_state == paused) {
+        } else if (this->game_state == paused | this->game_state == leaderboard) {
             for (int i = 0; i < board.size(); i++) {
                 for (int j = 0; j < board.at(i).size(); j++) {
                     render_window.draw(board.at(i).at(j)->s_empty) ;
@@ -422,7 +433,27 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
         render_window.draw(minutes_tens.getDigit()) ;
 
         render_window.display();
+
+        if (this->game_state == leaderboard) {
+            leaderboard_window.display(minesweeper, width, height, font) ;
+            clock_unpaused = chrono::high_resolution_clock::now() ;
+            pause_time_elapsed += clock_unpaused - clock_paused ;
+            clock_total = clock_current - clock_start ;
+            clock_total = clock_total - pause_time_elapsed ;
+            this->game_state = running ;
+        } else if (this->game_state == won) {
+            leaderboard_window.display(minesweeper, width, height, font) ;
+            for (int i = 0; i < board.size(); i++) {
+                for (int j = 0; j < board.at(i).size(); j++) {
+                    delete board.at(i).at(j);
+                }
+            }
+            board.clear();
+            render_window.close();
+            this->display(minesweeper, width, height, font);
+        }
     }
+
 }
 
 vector<Tile * > getAdjacents(Minesweeper & minesweeper, int & rows, int & cols, vector<vector<Tile * >> & board, int & i, int & j) {

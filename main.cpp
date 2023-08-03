@@ -2,6 +2,7 @@
 #include "Minesweeper.h"
 #include "WelcomeWindow.h"
 #include "GameWindow.h"
+#include "LeaderboardWindow.h"
 #include <iostream>
 using namespace std ;
 using namespace sf ;
@@ -12,6 +13,7 @@ int main() {
     // create window class instances
     WelcomeWindow welcome_window ;
     GameWindow game_window ;
+
     // read config data into window, return 1 if it fails
     if (!minesweeper.readCfg()) return 1 ;
     // initialize main font

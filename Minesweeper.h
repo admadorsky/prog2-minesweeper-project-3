@@ -2,7 +2,7 @@
 
 using namespace std ;
 
-enum minesweeper_state {welcome, game, leaderboard, leave} ;
+enum minesweeper_state {welcome, game, leave} ;
 
 struct cfg_vars {
     int cols = 0 ;

@@ -1,9 +1,10 @@
+#pragma once
 #include <SFML/Graphics.hpp>
 #include "Minesweeper.h"
 using namespace std ;
 using namespace sf ;
 
-enum game_states {running, won, lost, paused, debug};
+enum game_states {running, won, lost, paused, debug, leaderboard};
 
 class GameWindow {
 private:
