@@ -34,7 +34,7 @@ int main() {
     // run the game until the user exits
     while (minesweeper.game_state != leave) {
         if (minesweeper.game_state == welcome) welcome_window.display(minesweeper, width, height, font) ;
-        else if (minesweeper.game_state == game) game_window.display(minesweeper, width, height, font) ;
+        else if (minesweeper.game_state == game) game_window.display(minesweeper, width, height, font, welcome_window) ;
     }
 
     return 0;

@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Minesweeper.h"
+#include "WelcomeWindow.h"
 using namespace std ;
 using namespace sf ;
 
@@ -28,5 +29,5 @@ public:
     Sprite s_leaderboard_button ;
 
     GameWindow() ;
-    void display(Minesweeper & minesweeper, float & width, float & height, Font & font) ;
+    void display(Minesweeper & minesweeper, float & width, float & height, Font & font, WelcomeWindow welcome_window) ;
 };

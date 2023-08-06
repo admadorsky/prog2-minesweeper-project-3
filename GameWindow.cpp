@@ -43,7 +43,8 @@ GameWindow::GameWindow() {
     else s_leaderboard_button.setTexture(t_leaderboard_button) ;
 }
 
-void GameWindow::display(Minesweeper & minesweeper, float & width, float & height, sf::Font & font) {
+void GameWindow::display(Minesweeper & minesweeper, float & width, float & height, sf::Font & font, WelcomeWindow welcome_window) {
+
     LeaderboardWindow leaderboard_window ;
     auto clock_start = chrono::high_resolution_clock::now() ;
     auto clock_paused = chrono::high_resolution_clock::now() ;
@@ -152,15 +153,16 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
             // player clicked face (restart) button
             if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
                 if (within(event.mouseButton.x, (width / 2) - 32, (width / 2) + 32) &&
-                    within(event.mouseButton.y, (height - 50) - 32, (height - 50) + 32)) {
+                within(event.mouseButton.y, (height - 50) - 32, (height - 50) + 32)) {
+                    render_window.close();
+                    this->game_state = running ;
                     for (int i = 0; i < board.size(); i++) {
                         for (int j = 0; j < board.at(i).size(); j++) {
                             delete board.at(i).at(j);
                         }
                     }
                     board.clear();
-                    render_window.close();
-                    this->display(minesweeper, width, height, font);
+                    this->display(minesweeper, width, height, font, welcome_window);
                 }
             }
 
@@ -326,6 +328,11 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
             if (any_left_non_bombs == false) {
                 // win the game
                 this->game_state = won ;
+                string new_winner_entry ;
+                new_winner_entry = to_string(minutes_tens.number) + to_string(minutes_ones.number) +
+                        ":" + to_string(seconds_tens.number) + to_string(seconds_ones.number) +
+                        "," + welcome_window.player_name ;
+                leaderboard_window.addWinner(new_winner_entry) ;
                 // set the counter to 0
                 counter_hundreds.number = 0 ;
                 counter_tens.number = 0 ;
@@ -450,7 +457,7 @@ void GameWindow::display(Minesweeper & minesweeper, float & width, float & heigh
             }
             board.clear();
             render_window.close();
-            this->display(minesweeper, width, height, font);
+            this->display(minesweeper, width, height, font, welcome_window);
         }
     }
 
